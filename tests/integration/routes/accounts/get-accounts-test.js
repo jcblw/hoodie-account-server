@@ -272,12 +272,14 @@ getServer(function (error, server) {
         method: 'GET',
         url: '/accounts/abc1234',
         headers: {
-          authorization: 'Session someInvalidSession'
+          authorization: 'Session someInvalidSession',
+          accept: 'application/vnd.api+json'
         }
       }, function (response) {
         t.is(response.statusCode, 401, 'returns 401 status')
-        t.is(response.result.error, 'Unauthorized', 'returns "Unauthorized" error')
-        t.is(response.result.message, 'Session invalid', 'returns Invalid session message')
+        t.is(response.result.errors.length, 1, 'returns one error')
+        t.is(response.result.errors[0].title, 'Unauthorized', 'returns "Unauthorized" error')
+        t.is(response.result.errors[0].detail, 'Session invalid', 'returns Invalid session message')
         t.end()
       })
     })
@@ -288,12 +290,14 @@ getServer(function (error, server) {
         url: '/accounts/abc1234',
         headers: {
           // Session ID based on 'pat-doe', 'salt123', 'secret', 1209600
-          authorization: 'Session cGF0LWRvZToxMjc1MDA6zEZsQ1BuO-W8SthDSrg8KXQ8OlQ'
+          authorization: 'Session cGF0LWRvZToxMjc1MDA6zEZsQ1BuO-W8SthDSrg8KXQ8OlQ',
+          accept: 'application/vnd.api+json'
         }
       }, function (response) {
         t.is(response.statusCode, 401, 'returns 401 status')
-        t.is(response.result.error, 'Unauthorized', 'returns "Unauthorized" error')
-        t.is(response.result.message, 'Session invalid', 'returns Invalid session message')
+        t.is(response.result.errors.length, 1, 'returns one error')
+        t.is(response.result.errors[0].title, 'Unauthorized', 'returns "Unauthorized" error')
+        t.is(response.result.errors[0].detail, 'Session invalid', 'returns Invalid session message')
         t.end()
       })
     })
